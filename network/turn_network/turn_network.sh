@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+set -x
 
 echo 'env: $1'
 
