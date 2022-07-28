@@ -1,0 +1,45 @@
+
+version: '3'
+
+services:
+  zoo1:
+    image: ${DOCKER_ZOOKEEPER_IMAGE_NAME}
+    restart: always
+    hostname: ${DOCKER_ZOOKEEPER_HOSTNAME}1
+    ports:
+      - 2181:2181
+    volumes:
+      - ${PWD}/01/data:/data
+      - ${PWD}/01/logs:/datalog
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=${DOCKER_ZOOKEEPER_HOSTNAME}2:2888:3888 server.3=${DOCKER_ZOOKEEPER_HOSTNAME}3:2888:3888
+      TZ: Asia/Shanghai
+
+  zoo2:
+    image: ${DOCKER_ZOOKEEPER_IMAGE_NAME}
+    restart: always
+    hostname: ${DOCKER_ZOOKEEPER_HOSTNAME}2
+    ports:
+      - 2182:2181
+    volumes:
+      - ${PWD}/02/data:/data
+      - ${PWD}/02/logs:/datalog
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=${DOCKER_ZOOKEEPER_HOSTNAME}1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=${DOCKER_ZOOKEEPER_HOSTNAME}3:2888:3888
+      TZ: Asia/Shanghai
+
+  zoo3:
+    image: ${DOCKER_ZOOKEEPER_IMAGE_NAME}
+    restart: always
+    hostname: ${DOCKER_ZOOKEEPER_HOSTNAME}3
+    ports:
+      - 2183:2181
+    volumes:
+      - ${PWD}/03/data:/data
+      - ${PWD}/03/logs:/datalog
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=${DOCKER_ZOOKEEPER_HOSTNAME}1:2888:3888 server.2=${DOCKER_ZOOKEEPER_HOSTNAME}2:2888:3888 server.3=0.0.0.0:2888:3888
+      TZ: Asia/Shanghai

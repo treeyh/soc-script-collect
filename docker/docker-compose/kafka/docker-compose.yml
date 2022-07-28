@@ -1,0 +1,79 @@
+version: '3.7'
+
+networks:
+  kafka_net:
+    driver: bridge
+
+services:
+
+  kafka1:
+    image: ${DOCKER_KAFKA_IMAGE_NAME}
+    restart: unless-stopped
+    container_name: kafka1
+    ports:
+      - "9093:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: ${INNER_IP}                   ## 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 9093                                 ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${INNER_IP}:9093    ## 绑定发布订阅的端口。修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "${INNER_IP}:2181,${INNER_IP}:2182,${INNER_IP}:2183"
+    volumes:
+      - "${PWD}/01/docker.sock:/var/run/docker.sock"
+      - "${PWD}/01/data/:/kafka"
+    networks:
+      - kafka_net
+
+
+  kafka2:
+    image: ${DOCKER_KAFKA_IMAGE_NAME}
+    restart: unless-stopped
+    container_name: kafka2
+    ports:
+      - "9094:9092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ADVERTISED_HOST_NAME: ${INNER_IP}                 ## 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 9094                               ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${INNER_IP}:9094   ## 修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "${INNER_IP}:2181,${INNER_IP}:2182,${INNER_IP}:2183"
+    volumes:
+      - "${PWD}/02/docker.sock:/var/run/docker.sock"
+      - "${PWD}/02/data/:/kafka"
+    networks:
+      - kafka_net
+
+  kafka3:
+    image: ${DOCKER_KAFKA_IMAGE_NAME}
+    restart: unless-stopped
+    container_name: kafka3
+    ports:
+      - "9095:9092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ADVERTISED_HOST_NAME: ${INNER_IP}                 ## 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 9095                              ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${INNER_IP}:9095   ## 修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "${INNER_IP}:2181,${INNER_IP}:2182,${INNER_IP}:2183"
+    volumes:
+      - "${PWD}/03/docker.sock:/var/run/docker.sock"
+      - "${PWD}/03/data/:/kafka"
+    networks:
+      - kafka_net
+
+  kafka-manager:
+    image: ${DOCKER_KAFKA_MANAGER_IMAGE_NAME}
+    restart: unless-stopped
+    container_name: kafka-manager
+    hostname: kafka-manager
+    ports:
+      - "9000:9000"
+    links:            # 连接本compose文件创建的container
+      - kafka1
+      - kafka2
+      - kafka3
+    environment:
+      ZK_HOSTS: ${INNER_IP}:2181,${INNER_IP}:2182,${INNER_IP}:2183                 ## 修改:宿主机IP
+      TZ: CST-8
+    networks:
+      - kafka_net
