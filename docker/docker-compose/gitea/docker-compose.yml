@@ -1,0 +1,30 @@
+version: "3"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:1.17
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - APP_NAME="悦锴"
+      - DOMAIN=https://git.ejyi.com
+      - DB_TYPE=mysql
+      - DB_HOST=192.168.0.134:3306
+      - DB_NAME=gitea
+      - DB_USER=root
+      - DB_PASSWD=7Dv_v2VxnZ8PgG26f
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - ${PWD}/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "26631:3000"
+      - "222:22"

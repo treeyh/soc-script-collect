@@ -1,0 +1,15 @@
+version: '3.9' 
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306" 
+    volumes:
+      - ${PWD}/data:/var/lib/mysql 
+      - ${PWD}/conf:/etc/mysql/conf.d
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    environment:
+      - MYSQL_ROOT_PASSWORD=7Dv_v2VxnZ8PgG26f
