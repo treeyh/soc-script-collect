@@ -1,0 +1,9 @@
+
+[providers.docker]
+  endpoint = "unix:///var/run/docker.sock"
+  useBindPortIP = false
+  exposedByDefault = false
+  # 定义用于连接到所有容器的默认 docker 网络
+  network = "traefik"
+  # 定义 HTTP 连接的客户端超时
+  httpClientTimeout = 300
