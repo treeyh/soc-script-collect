@@ -1,9 +1,36 @@
 
 [providers.docker]
-  endpoint = "unix:///var/run/docker.sock"
-  useBindPortIP = false
-  exposedByDefault = false
-  # 定义用于连接到所有容器的默认 docker 网络
-  network = "traefik"
-  # 定义 HTTP 连接的客户端超时
-  httpClientTimeout = 300
+endpoint = "unix:///var/run/docker.sock"
+useBindPortIP = false
+exposedByDefault = false
+# 定义用于连接到所有容器的默认 docker 网络
+network = "traefik"
+# 定义 HTTP 连接的客户端超时
+httpClientTimeout = 300
+
+
+[entryPoints]
+[entryPoints.web]
+address = ":80"
+[entryPoints.web.forwardedHeaders]
+insecure = true
+trustedIPs = ["127.0.0.1/32", "192.168.0.1/24"]
+[entryPoints.web.transport]
+[entryPoints.web.transport.respondingTimeouts]
+readTimeout = 42
+writeTimeout = 42
+idleTimeout = 0
+
+[entryPoints.websecure]
+address = ":443"
+[entryPoints.websecure.transport]
+[entryPoints.websecure.transport.respondingTimeouts]
+readTimeout = 42
+# 
+writeTimeout = 42
+# 空闲（保持活动状态）连接在关闭自身之前保持空闲状态的最长时间。 0不超时
+idleTimeout = 0
+
+[entryPoints.foo]
+[entryPoints.foo.http2]
+maxConcurrentStreams = 250

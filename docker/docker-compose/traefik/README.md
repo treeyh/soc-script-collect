@@ -63,3 +63,10 @@ DNS.2 = *.${OUTPUT_FILENAME}
 openssl req -x509 -newkey rsa:2048 -keyout ssl/${OUTPUT_FILENAME}.key -out ssl/${OUTPUT_FILENAME}.crt -days 3600 -nodes -config ssl/${OUTPUT_FILENAME}.conf
 
 ```
+
+https://juejin.cn/post/7074942056304476196
+
+https://juejin.cn/post/7074942056304476196
+https://zhuanlan.zhihu.com/p/387817529
+https://doc.traefik.io/traefik/routing/entrypoints/
+https://www.traefik.tech/providers/docker/#exposedbydefault
