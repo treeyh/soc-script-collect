@@ -1,0 +1,30 @@
+[http.middlewares.dash-auth.basicAuth]
+users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/"]
+
+[http.routers.dashboard-redirect-https]
+rule = "Host(`dashboard.lab.io`, `dashboard.lab.com`)"
+entryPoints = ["http"]
+service = "noop"
+middlewares = ["https-redirect"]
+priority = 100
+
+[http.routers.dashboard]
+rule = "Host(`dashboard.lab.io`, `dashboard.lab.com`)"
+entrypoints = ["https"]
+service = "dashboard@internal"
+middlewares = ["dash-compress"]
+[http.routers.dashboard.tls]
+
+[http.routers.api]
+rule = "Host(`dashboard.lab.io`, `dashboard.lab.com`) && PathPrefix(`/api`)"
+entrypoints = ["https"]
+service = "api@internal"
+middlewares = ["dash-compress"]
+[http.routers.api.tls]
+
+[http.routers.ping]
+rule = "Host(`dashboard.lab.io`, `dashboard.lab.com`) && PathPrefix(`/ping`)"
+entrypoints = ["https"]
+service = "ping@internal"
+middlewares = ["dash-compress"]
+[http.routers.ping.tls]

@@ -1,30 +1,52 @@
+[global]
+checkNewVersion = false
+sendAnonymousUsage = false
 
+[ping]
+
+[accessLog]
+
+[log]
+level = "WARN"
+format = "common"
+
+[api]
+dashboard = true
+insecure = true
+
+[providers]
 [providers.docker]
+watch = true
 endpoint = "unix:///var/run/docker.sock"
+swarmMode = false
 useBindPortIP = false
 exposedByDefault = false
 # 定义用于连接到所有容器的默认 docker 网络
 network = "traefik"
 # 定义 HTTP 连接的客户端超时
 httpClientTimeout = 300
+[providers.file]
+watch = true
+directory = "/etc/traefik/config"
+debugLogGeneratedTemplate = true
 
 
 [entryPoints]
-[entryPoints.web]
+[entryPoints.http]
 address = ":80"
-[entryPoints.web.forwardedHeaders]
+[entryPoints.http.forwardedHeaders]
 insecure = true
 trustedIPs = ["127.0.0.1/32", "192.168.0.1/24"]
-[entryPoints.web.transport]
-[entryPoints.web.transport.respondingTimeouts]
+[entryPoints.http.transport]
+[entryPoints.http.transport.respondingTimeouts]
 readTimeout = 42
 writeTimeout = 42
 idleTimeout = 0
 
-[entryPoints.websecure]
+[entryPoints.https]
 address = ":443"
-[entryPoints.websecure.transport]
-[entryPoints.websecure.transport.respondingTimeouts]
+[entryPoints.https.transport]
+[entryPoints.https.transport.respondingTimeouts]
 readTimeout = 42
 # 
 writeTimeout = 42

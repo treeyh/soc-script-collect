@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - "3306:3306" 
+    networks:
+      - inner_network
     volumes:
       - ${PWD}/data:/var/lib/mysql 
       - ${PWD}/conf:/etc/mysql/conf.d
@@ -13,3 +15,7 @@ services:
       - /etc/timezone:/etc/timezone
     environment:
       - MYSQL_ROOT_PASSWORD=7Dv_v2VxnZ8PgG26f
+
+networks:
+  inner_network:
+    external: true

@@ -1,21 +1,94 @@
 version: '3'
 
 services:
-  reverse-proxy:
+  traefik:
     # The official v2 Traefik docker image
     image: traefik:v2.8
+    container_name: traefik
+    restart: always
+    networks:
+      - traefik
     ports:
       # The HTTP port
       - "80:80"
       - "443:443"
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
+    command: 
+      - "--global.sendAnonymousUsage=false"
+      - "--global.checkNewVersion=false"
+      - "--ping=true"
+      - "--accesslog=true"
+      - "--log.level=warn"
+      - "--log.format=common"
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--api.debug=false"
+      # 禁用 SSL 证书验证。
+      # - "--serversTransport.insecureSkipVerify=true"
+      # 控制每个主机要保持的最大空闲（保持活动）连接数。
+      # - "--serversTransport.maxIdleConnsPerHost=2"
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.http.forwardedHeaders.insecure=true"
+      - "--entryPoints.http.forwardedHeaders.trustedIPs=[\"127.0.0.1/32\", \"192.168.0.1/24\"]"
+      - "--entryPoints.http.transport.respondingTimeouts.readTimeout=10"
+      - "--entryPoints.http.transport.respondingTimeouts.writeTimeout=10"
+      - "--entryPoints.http.transport.respondingTimeouts.idleTimeout=0"
+      - "--entryPoints.http.transport.lifeCycle.requestAcceptGraceTimeout=0"
+      - "--entryPoints.http.transport.lifeCycle.graceTimeOut=10"
+      # 重定向
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.https.address=:443"
+      - "--entryPoints.https.forwardedHeaders.insecure=true"
+      - "--entryPoints.https.forwardedHeaders.trustedIPs=[\"127.0.0.1/32\", \"192.168.0.1/24\"]"
+      - "--entryPoints.https.transport.respondingTimeouts.readTimeout=10"
+      - "--entryPoints.https.transport.respondingTimeouts.writeTimeout=10"
+      - "--entryPoints.https.transport.respondingTimeouts.idleTimeout=0"
+      - "--entryPoints.https.transport.lifeCycle.requestAcceptGraceTimeout=0"
+      - "--entryPoints.https.transport.lifeCycle.graceTimeOut=10"
+      - "--providers.docker=true"
+      - "--providers.docker.watch=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.swarmMode=false"
+      - "--providers.docker.useBindPortIP=false"
+      - "--providers.docker.network=traefik"
+      - "--providers.file=true"
+      - "--providers.file.watch=true"
+      - "--providers.file.directory=/etc/traefik/config"
+      - "--providers.file.debugloggeneratedtemplate=true"
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${PWD}/ssl/:/data/ssl/:ro
       - ${PWD}/logs:/data/logs:rw
       - ${PWD}/traefik/:/etc/traefik/:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      # # 默认请求转发 https 端口
+      # - "traefik.http.routers.traefik-dash-default.middlewares=https-redirect@file"
+      # - "traefik.http.routers.traefik-dash-default.entryPoints=http"
+      # - "traefik.http.routers.traefik-dash-default.rule=Host(`dashboard.guava.lab.com`)"
+      # - "traefik.http.routers.traefik-dash-default.service=dashboard@internal"
+      # # 处理网页
+      # - "traefik.http.routers.traefik-dash-web.entryPoints=https"
+      # - "traefik.http.routers.traefik-dash-web.rule=Host(`dashboard.guava.lab.com`) && PathPrefix(`/`)"
+      # - "traefik.http.routers.traefik-dash-web.tls=true"
+      # - "traefik.http.routers.traefik-dash-web.service=dashboard@internal"
+      # # 处理接口
+      # - "traefik.http.routers.traefik-dash-api.entryPoints=https"
+      # - "traefik.http.routers.traefik-dash-api.rule=Host(`dashboard.guava.lab.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      # - "traefik.http.routers.traefik-dash-api.tls=true"
+      # - "traefik.http.routers.traefik-dash-api.service=api@internal"    
+    extra_hosts:
+      # https://github.com/containous/traefik/blob/master/pkg/version/version.go#L61
+      - "update.traefik.io:127.0.0.1"
+      # https://github.com/containous/traefik/blob/master/pkg/collector/collector.go#L20
+      - "collect.traefik.io:127.0.0.1"
+      - "stats.g.doubleclick.net:127.0.0.1"
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider --proxy off localhost:80/ping || exit 1"]
       interval: 3s
@@ -24,3 +97,7 @@ services:
       driver: "json-file"
       options:
         max-size: "1m"
+
+networks:
+  traefik:
+    external: true

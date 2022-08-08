@@ -1,8 +1,4 @@
-version: "3"
-
-networks:
-  gitea:
-    external: false
+version: "3.9"
 
 services:
   server:
@@ -12,19 +8,27 @@ services:
       - USER_UID=1000
       - USER_GID=1000
       - APP_NAME="悦锴"
-      - DOMAIN=https://git.ejyi.com
+      - DOMAIN=https://git.yuekai.top:26631
+      - ROOT_URL=http://git.yuekai.top:26631
+      - SSH_PORT=26632
       - DB_TYPE=mysql
       - DB_HOST=192.168.0.134:3306
-      - DB_NAME=gitea
+      - DB_NAME=gitea_db
       - DB_USER=root
       - DB_PASSWD=7Dv_v2VxnZ8PgG26f
     restart: always
     networks:
-      - gitea
+      - inner_network
     volumes:
       - ${PWD}/data:/data
+      - ${PWD}/.ssh:/data/git/.ssh
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "26631:3000"
-      - "222:22"
+      - "26632:22"
+
+
+networks:
+  inner_network:
+    external: true
