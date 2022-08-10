@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:1.23
+    container_name: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ${PWD}/conf/:/etc/nginx/:ro
+      - ${PWD}/logs:/var/log/nginx:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
