@@ -1,8 +1,8 @@
 version: "3"
 services:
   redis:
-    image: ${DOCKER_REDIS_IMAGE_NAME}
-    container_name: ${DOCKER_REDIS_HOSTNAME}
+    image: redis:6
+    container_name: redis
     restart: always
     ports:
       - 6379:6379
@@ -10,9 +10,11 @@ services:
     volumes:
       - ${PWD}/data:/data
       - ${PWD}/conf/redis.conf:/etc/redis.conf
-      # - /etc/localtime:/etc/localtime:ro
-      # - /etc/timezone:/etc/timezone:ro
-    privileged: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    # privileged: true
+    networks:
+      - traefik_network
     environment:
       - TZ=Asia/Shanghai
       - LANG=en_US.UTF-8
@@ -25,3 +27,7 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+
+networks:
+  traefik_network:
+    external: true

@@ -42,11 +42,11 @@ services:
     # volumes:
     #  - ./patches/...:/opt/outline/...
     networks:
-      - traefik
-      - outline
+      - traefik_network
+      - inner_network
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=traefik_network"
 
       - "traefik.http.middlewares.outline-gzip.compress=true"
       - "traefik.http.middlewares.outline-redir-https.redirectScheme.scheme=https"
@@ -79,7 +79,7 @@ services:
         max-size: "10m"
 
 networks:
-  outline:
+  inner_network:
     external: true
-  traefik:
+  traefik_network:
     external: true
