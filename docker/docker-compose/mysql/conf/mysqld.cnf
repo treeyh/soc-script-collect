@@ -37,6 +37,10 @@ collation-server=utf8mb4_general_ci
 innodb_default_row_format=DYNAMIC
 innodb_log_file_size=1G
 
+
+#跳过DNS反向解析
+skip-name-resolve
+
 #sql_mode=NO_AUTO_VALUE_ON_ZERO
 #sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
 sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
@@ -58,3 +62,4 @@ binlog_format=ROW
 server-id=1
 
 ngram_token_size=2
+
