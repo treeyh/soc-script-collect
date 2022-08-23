@@ -11,8 +11,8 @@ services:
       /usr/bin/mc policy set public local/${AWS_S3_UPLOAD_BUCKET_NAME};
       "
     networks:
-      - outline
+      - inner_network
 
 networks:
-  outline:
+  inner_network:
     external: true

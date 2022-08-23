@@ -9,6 +9,7 @@ services:
       - USER_GID=1000
       - APP_NAME="悦锴"
       - DOMAIN=https://git.yuekai.top:26631
+      - SSH_DOMAIN=gite.yuekai.top
       - ROOT_URL=http://git.yuekai.top:26631
       - SSH_PORT=26632
       - HTTP_PORT=26631

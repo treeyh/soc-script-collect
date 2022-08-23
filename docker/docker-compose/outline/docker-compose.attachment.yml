@@ -5,16 +5,16 @@ services:
     image: ${DOCKER_ATTACHMENT_IMAGE_NAME}
     container_name: linx-server
     restart: always
-    command: -config /data/linx-server.conf
+    command: -config /data/conf/attachment.conf
     volumes:
       - ${PWD}/data/linx/files:/data/files
       - ${PWD}/data/linx/meta:/data/meta
-      - ${PWD}/config/attachment.conf:/data/linx-server.conf
+      - ${PWD}/conf/attachment.conf:/data/conf/attachment.conf
     networks:
-      - traefik
+      - traefik_network
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=traefik_network"
 
       - "traefik.http.middlewares.upload-gzip.compress=true"
       - "traefik.http.middlewares.upload-redir-https.redirectScheme.scheme=https"
@@ -50,5 +50,5 @@ services:
         max-size: "10m"
 
 networks:
-  traefik:
+  traefik_network:
     external: true

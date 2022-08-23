@@ -9,12 +9,13 @@
 ```bash
 #!/bin/bash
 
-NETWORK_NAME=traefik
+NETWORK_NAME=traefik_network
 
 if [ -z $(docker network ls --filter name=^${NETWORK_NAME}$ --format="{{ .Name }}") ] ; then
   docker network create ${NETWORK_NAME};
 fi
 
+# docker network create traefik_network
 ```
 
 ## 生成必要的证书

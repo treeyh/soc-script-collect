@@ -7,7 +7,7 @@ services:
     container_name: traefik
     restart: always
     networks:
-      - traefik_network
+      - traefik
     ports:
       # The HTTP port
       - "80:80"
@@ -18,20 +18,13 @@ services:
       - "--global.sendAnonymousUsage=false"
       - "--global.checkNewVersion=false"
       - "--ping=true"
+      - "--accesslog=true"
+      - "--log.level=warn"
+      - "--log.format=common"
       - "--api=true"
       - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--api.debug=false"
-      # 日志
-      - "--log.filePath=/data/logs/traefik.log"
-      # 日志格式 json/common
-      - "--log.format=json"
-      - "--log.level=INFO"
-      - "--accesslog=true"
-      - "--accesslog.filepath=/data/logs/access.log"
-      - "--accesslog.format=json"
-      - "--accesslog.fields.names.StartUTC=drop"
-      
       # 禁用 SSL 证书验证。
       # - "--serversTransport.insecureSkipVerify=true"
       # 控制每个主机要保持的最大空闲（保持活动）连接数。
@@ -57,7 +50,7 @@ services:
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.swarmMode=false"
       - "--providers.docker.useBindPortIP=false"
-      - "--providers.docker.network=traefik_network"
+      - "--providers.docker.network=traefik"
       - "--providers.file=true"
       - "--providers.file.watch=true"
       - "--providers.file.directory=/etc/traefik/config"
@@ -102,7 +95,13 @@ services:
       driver: "json-file"
       options:
         max-size: "1m"
+  
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: traefik/whoami
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
 
 networks:
-  traefik_network:
+  traefik:
     external: true

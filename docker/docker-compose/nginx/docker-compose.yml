@@ -1,20 +1,22 @@
+# 未完成
+
 version: "3"
+
 services:
-  redis:
-    image: redis:6
-    container_name: redis
+  nginx:
+    image: nginx:1.23
+    container_name: nginx
     restart: always
     ports:
-      - 6379:6379
-    command: redis-server /etc/redis.conf
+      - 80:80
+      - 443:443
     volumes:
-      - ${PWD}/data:/data
-      - ${PWD}/conf/redis.conf:/etc/redis.conf
+      - ${PWD}/conf/:/etc/nginx/:ro
+      - ${PWD}/logs:/var/log/nginx:rw
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    # privileged: true
-    networks:
-      - traefik_network
+    command: [nginx-debug, '-g', 'daemon off;']
+    privileged: true
     environment:
       - TZ=Asia/Shanghai
       - LANG=en_US.UTF-8
@@ -27,7 +29,3 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-
-networks:
-  traefik_network:
-    external: true
