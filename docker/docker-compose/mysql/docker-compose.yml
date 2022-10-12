@@ -3,8 +3,8 @@ version: '3.9'
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql
     restart: always
+    container_name: mysql8
     ports:
       - "3306:3306" 
     networks:
@@ -16,6 +16,8 @@ services:
       - /etc/timezone:/etc/timezone
     environment:
       - MYSQL_ROOT_PASSWORD=7Dv_v2VxnZ8PgG26f
+    command:
+      --lower_case_table_names=1
 
 networks:
   inner_network:

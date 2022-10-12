@@ -12,6 +12,7 @@ services:
       - SSH_DOMAIN=gite.yuekai.top
       - ROOT_URL=http://git.yuekai.top:26631
       - SSH_PORT=26632
+      - HTTP_PORT=26631
       - DB_TYPE=mysql
       - DB_HOST=192.168.0.134:3306
       - DB_NAME=gitea_db
@@ -22,12 +23,12 @@ services:
       - inner_network
     volumes:
       - ${PWD}/data:/data
-      - ${PWD}/.ssh:/data/git/.ssh
+      - ${PWD}/ssh:/data/git/.ssh
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "26631:3000"
-      - "26632:22"
+      - "26631:26631"
+      - "26632:26632"
 
 
 networks:
