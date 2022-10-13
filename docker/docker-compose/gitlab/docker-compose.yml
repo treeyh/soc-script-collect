@@ -1,0 +1,37 @@
+version: '3.6'
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:15.4.2-ce.0'
+    hostname: git.yuekai.top
+    container_name: gitlab
+    restart: always
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://git.yuekai.top:26631'
+        gitlab_rails['gitlab_shell_ssh_port'] = 26632
+    ports:
+      - '26631:26631'
+      - '26633:443'
+      - '26632:22'
+    volumes:
+      - ${PWD}/conf:/etc/gitlab
+      - ${PWD}/logs:/var/log/gitlab
+      - ${PWD}/data:/var/opt/gitlab
+    shm_size: '256m'
+#     networks:
+#       - gitlab
+#   gitlab-runner:
+#     image: gitlab/gitlab-runner:alpine
+#     container_name: gitlab-runner    
+#     restart: always
+#     depends_on:
+#       - web
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+#       - /data/docker-gitlab/gitlab-runner:/etc/gitlab-runner'
+#     networks:
+#       - gitlab
+#
+# networks:
+#   gitlab:
+#     name: gitlab-network
