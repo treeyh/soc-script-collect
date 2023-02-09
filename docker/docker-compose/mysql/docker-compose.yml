@@ -15,7 +15,7 @@ services:
       - /etc/localtime:/etc/localtime
       - /etc/timezone:/etc/timezone
     environment:
-      - MYSQL_ROOT_PASSWORD=7Dv_v2VxnZ8PgG26f
+      - MYSQL_ROOT_PASSWORD=2Dv_v2VxnZ8PgG26f
     command:
       --lower_case_table_names=1
 

@@ -1,0 +1,45 @@
+version: '3.1' 
+
+services:
+  yapi-web:
+    image: jayfong/yapi-x:2.6.0
+    container_name: yapi-web
+    ports:
+      - "40001:3000" 
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    networks:
+      - inner_network
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+      - YAPI_ADMIN_ACCOUNT=tree@ejyi.com
+      - YAPI_ADMIN_PASSWORD=Yapix2020
+      - YAPI_CLOSE_REGISTER=true
+      - YAPI_DB_SERVERNAME=yapi-mongo
+      - YAPI_DB_PORT=27017
+      - YAPI_DB_DATABASE=yapi
+      - YAPI_MAIL_ENABLE=false
+      - YAPI_LDAP_LOGIN_ENABLE=false
+      #- YAPI_PLUGINS=[{"name":"yapi-plugin-notifier","options":{"host":"https://yapi.yuekai.top"}}]
+      - YAPI_PLUGINS=[]
+    depends_on:
+      - yapi-mongo
+    links:
+      - yapi-mongo
+    restart: unless-stopped
+  yapi-mongo:
+    image: mongo:latest
+    container_name: yapi-mongo
+    volumes:
+      - ${PWD}/data/db:/data/db
+    networks:
+      - inner_network
+    expose:
+      - 27017
+    restart: unless-stopped
+
+networks:
+  inner_network:
+    external: true

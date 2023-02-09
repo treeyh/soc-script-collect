@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  xilu_hugo:
+    image: klakegg/hugo:0.101.0
+    restart: always
+    command: "server --baseUrl='https://www.xilu.plus' --appendPort=false --bind='0.0.0.0' "
+    ports:
+      - "9092:1313"
+    networks:
+      - inner_network
+    volumes:
+      - ${PWD}/www.xilu.plus:/src
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+
+
+networks:
+  inner_network:
+    external: true
