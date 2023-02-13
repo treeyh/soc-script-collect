@@ -14,7 +14,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     # privileged: true
     networks:
-      - traefik_network
+      - inner_network
     environment:
       - TZ=Asia/Shanghai
       - LANG=en_US.UTF-8
@@ -29,5 +29,5 @@ services:
         max-size: "10m"
 
 networks:
-  traefik_network:
+  inner_network:
     external: true
