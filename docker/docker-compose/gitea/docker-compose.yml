@@ -2,22 +2,26 @@ version: "3.9"
 
 services:
   server:
-    image: gitea/gitea:1.17
+    image: gitea/gitea:1.18
     container_name: gitea
     environment:
       - USER_UID=1000
       - USER_GID=1000
       - APP_NAME="悦锴"
+      - RUN_MODE=prod
       - DOMAIN=https://git.yuekai.top:26631
       - SSH_DOMAIN=gite.yuekai.top
       - ROOT_URL=http://git.yuekai.top:26631
-      - SSH_PORT=26632
       - HTTP_PORT=26631
+      - SSH_PORT=26632
+      - SSH_LISTEN_PORT=26632
       - DB_TYPE=mysql
       - DB_HOST=192.168.0.134:3306
       - DB_NAME=gitea_db
       - DB_USER=root
       - DB_PASSWD=7Dv_v2VxnZ8PgG26f
+      - DISABLE_REGISTRATION=true
+      - REQUIRE_SIGNIN_VIEW=true
     restart: always
     networks:
       - inner_network
