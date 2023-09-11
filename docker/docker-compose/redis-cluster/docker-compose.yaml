@@ -1,0 +1,120 @@
+# 描述 Compose 文件的版本信息
+version: "3.8"
+
+# 定义服务，可以多个
+services:
+  redis-cluster:
+    image: redis:6
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.30
+    command: redis-cli --cluster create 172.11.0.21:6379 172.11.0.22:6379 172.11.0.23:6379 172.11.0.24:6379 172.11.0.25:6379 172.11.0.26:6379 --cluster-replicas 1  --cluster-yes
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+      - redis-4
+      - redis-5
+      - redis-6
+
+  redis-1: # 服务名称
+    image: redis:6 # 创建容器时所需的镜像
+    container_name: redis-1 # 容器名称
+    restart: "no" # 容器总是重新启动
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.21
+    ports:
+      - "6381:6379"
+      - "16381:16379"
+    volumes: # 数据卷，目录挂载
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-1/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-1/data:/data
+    command: redis-server /etc/redis/redis.conf # 覆盖容器启动后默认执行的命令
+
+  redis-2:
+    image: redis:6
+    container_name: redis-2
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.22
+    ports:
+      - "6382:6379"
+      - "16382:16379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-2/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-2/data:/data
+    command: redis-server /etc/redis/redis.conf
+
+  redis-3:
+    image: redis:6
+    container_name: redis-3
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.23
+    ports:
+      - "6383:6379"
+      - "16383:16379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-3/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-3/data:/data
+    command: redis-server /etc/redis/redis.conf
+
+  redis-4:
+    image: redis:6
+    container_name: redis-4
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.24
+    ports:
+      - "6384:6379"
+      - "16384:16379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-4/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-4/data:/data
+    command: redis-server /etc/redis/redis.conf
+
+  redis-5:
+    image: redis:6
+    container_name: redis-5
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.25
+    ports:
+      - "6385:6379"
+      - "16385:16379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-5/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-5/data:/data
+    command: redis-server /etc/redis/redis.conf
+
+  redis-6:
+    image: redis:6
+    container_name: redis-6
+    networks:
+      inner_network:
+        ipv4_address: 172.11.0.26
+    ports:
+      - "6386:6379"
+      - "16386:16379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./redis-6/conf/redis.conf:/etc/redis/redis.conf
+      - ./redis-6/data:/data
+    command: redis-server /etc/redis/redis.conf
+
+# 自动创建网络，并手动指定IP网段
+networks:
+  inner_network:
+    external: true
