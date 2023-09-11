@@ -2,11 +2,16 @@ version: '3.9'
 
 services:
   xilu_hugo:
-    image: klakegg/hugo:0.101.0
+    image: klakegg/hugo:0.107.0-ext-alpine
+    container_name: xilu_hugo
+    user: root
     restart: always
-    command: "server --baseUrl='https://www.xilu.plus' --appendPort=false --bind='0.0.0.0' "
+      #command: "server --baseUrl='https://www.tree.plus' --appendPort=false --bind='0.0.0.0' "
+      # command: "server --disableFastRender --bind='0.0.0.0' "
+      # command: "server --disableFastRender --bind='0.0.0.0' "
+    entrypoint: "/src/start_site.sh"
     ports:
-      - "9092:1313"
+      - "9094:1313"
     networks:
       - inner_network
     volumes:
