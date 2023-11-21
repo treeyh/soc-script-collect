@@ -15,7 +15,3 @@ fi
 
 ```
 
-`docker network create --subnet 172.10.0.0/24 --gateway 172.10.0.1 outer_network`
-`docker network create --subnet 172.11.0.0/24 --gateway 172.11.0.1 inner_network`
-
-`docker network create inner_network`

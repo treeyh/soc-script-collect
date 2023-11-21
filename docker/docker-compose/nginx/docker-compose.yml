@@ -1,17 +1,15 @@
-# 未完成
-
-version: "3"
+version: "3.9"
 
 services:
   nginx:
-    image: nginx:1.23
+    image: nginx:1.24
     container_name: nginx
-    restart: always
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ${PWD}/conf/:/etc/nginx/:ro
+      - ${PWD}/conf:/etc/nginx:ro
       - ${PWD}/logs:/var/log/nginx:rw
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -25,7 +23,14 @@ services:
       interval: 10s
       timeout: 30s
       retries: 3
+    networks:
+      - inner_network
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
+
+
+networks:
+  inner_network:
+    external: true
