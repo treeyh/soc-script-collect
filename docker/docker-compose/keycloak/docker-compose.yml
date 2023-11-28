@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # keycloak
+  keycloak:
+    image: jboss/keycloak:16.1.1
+    container_name: keycloak
+    ports:
+      - 6379:6379
+    volumes:
+        - /etc/timezone:/etc/timezone
+        - /etc/localtime:/etc/localtime
+    environment:
+        # 初始化密码
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=password_of_keycloak
+        # DB
+        - DB_VENDOR=postgres
+        - DB_ADDR=postgres12
+        - DB_PORT=5432
+        - DB_DATABASE=keycloak
+        - DB_USER=keycloak
+        - DB_PASSWORD=password_of_keycloak_user
+        # 开启反向代理
+        - PROXY_ADDRESS_FORWARDING=true
+    labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=nginx_all_in_one"
+        - "traefik.http.routers.halobug-sso.entrypoints=https"
+        - "traefik.http.routers.halobug-sso.tls=true"
+        - "traefik.http.routers.halobug-sso.rule=Host(`sso.example.com`)"
+        - "traefik.http.services.halobug-sso.loadbalancer.server.scheme=http"
+        - "traefik.http.services.halobug-sso.loadbalancer.server.port=8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+    networks:
+        - nginx_all_in_one
+networks:
+  nginx_all_in_one:
+    external: true
