@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  outline:
+    image: outlinewiki/outline:0.74.0
+    container_name: outline
+    env_file: ${PWD}/outline-docker.env
+    expose:
+      - 3000
+    ports:
+      - 9199:3000
+    networks:
+      - inner_network
+
+networks:
+  inner_network:
+    external: true

@@ -27,6 +27,8 @@ services:
     # you are connecting to your database.
     ports:
       - "0.0.0.0:5432:5432"
+    expose:
+      - 5432
     networks:
       - inner_network
     volumes:

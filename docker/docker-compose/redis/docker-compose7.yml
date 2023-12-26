@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    command: 
+      --requirepass "password_of_redis"
+    expose:
+      - 6379
+    volumes:
+      - ./data:/data
+    privileged: true
+    networks:
+      - inner_network
+networks:
+  inner_network:
+    external: true

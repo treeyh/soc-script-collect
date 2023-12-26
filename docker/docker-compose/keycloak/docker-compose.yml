@@ -4,39 +4,48 @@ services:
   # keycloak
   keycloak:
     image: jboss/keycloak:16.1.1
-    container_name: keycloak
+    container_name: keycloak16
+    expose:
+      - 8009
+      - 8080
+      - 8443
     ports:
-      - 6379:6379
-    volumes:
-        - /etc/timezone:/etc/timezone
-        - /etc/localtime:/etc/localtime
+      - 9109:8009
+      - 9180:8080
+      - 9143:8443
+    # volumes:
+    #     - /etc/timezone:/etc/timezone
+    #     - /etc/localtime:/etc/localtime
     environment:
-        # 初始化密码
-        - KEYCLOAK_USER=admin
-        - KEYCLOAK_PASSWORD=password_of_keycloak
-        # DB
-        - DB_VENDOR=postgres
-        - DB_ADDR=postgres12
-        - DB_PORT=5432
-        - DB_DATABASE=keycloak
-        - DB_USER=keycloak
-        - DB_PASSWORD=password_of_keycloak_user
-        # 开启反向代理
-        - PROXY_ADDRESS_FORWARDING=true
+      #时区
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+      # 初始化密码
+      - KEYCLOAK_USER=tree
+      - KEYCLOAK_PASSWORD=uhKqa1qrMvr3oIjM
+      # DB
+      - DB_VENDOR=postgres
+      - DB_ADDR=postgres14
+      - DB_PORT=5432
+      - DB_DATABASE=keycloak_db
+      - DB_USER=keycloak
+      - DB_PASSWORD=bdpq9WfLPt47x8N0
+      # 开启反向代理
+      - PROXY_ADDRESS_FORWARDING=true
     labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=nginx_all_in_one"
-        - "traefik.http.routers.halobug-sso.entrypoints=https"
-        - "traefik.http.routers.halobug-sso.tls=true"
-        - "traefik.http.routers.halobug-sso.rule=Host(`sso.example.com`)"
-        - "traefik.http.services.halobug-sso.loadbalancer.server.scheme=http"
-        - "traefik.http.services.halobug-sso.loadbalancer.server.port=8080"
+      - "traefik.enable=true"
+      - "traefik.docker.network=inner_network"
+      - "traefik.http.routers.halobug-sso.entrypoints=https"
+      - "traefik.http.routers.halobug-sso.tls=true"
+      - "traefik.http.routers.halobug-sso.rule=Host(`sso.treeyh.com`)"
+      - "traefik.http.services.halobug-sso.loadbalancer.server.scheme=http"
+      - "traefik.http.services.halobug-sso.loadbalancer.server.port=8080"
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
     networks:
-        - nginx_all_in_one
+        - inner_network
 networks:
-  nginx_all_in_one:
+  inner_network:
     external: true
