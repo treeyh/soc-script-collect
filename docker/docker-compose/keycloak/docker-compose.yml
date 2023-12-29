@@ -1,10 +1,11 @@
 version: "3.8"
+# https://blog.csdn.net/xuzhongyi103/article/details/131420704
 
 services:
   # keycloak
   keycloak:
-    image: jboss/keycloak:16.1.1
-    container_name: keycloak16
+    image: keycloak/keycloak:23.0
+    container_name: keycloak
     expose:
       - 8009
       - 8080
@@ -21,31 +22,29 @@ services:
       - TZ=Asia/Shanghai
       - LANG=en_US.UTF-8
       # 初始化密码
+      - KEYCLOAK_ADMIN=tree
+      - KEYCLOAK_ADMIN_PASSWORD=uhKqa1qrMvr3oIjM
       - KEYCLOAK_USER=tree
       - KEYCLOAK_PASSWORD=uhKqa1qrMvr3oIjM
-      # DB
-      - DB_VENDOR=postgres
-      - DB_ADDR=postgres14
-      - DB_PORT=5432
-      - DB_DATABASE=keycloak_db
-      - DB_USER=keycloak
-      - DB_PASSWORD=bdpq9WfLPt47x8N0
+      # # DB
+      # - KC_DB=postgres
+      # - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak_db
+      # - KC_DB_USERNAME=keycloak
+      # - KC_DB_PASSWORD=bdpq9WfLPt47x8N0
+      - KC_HOSTNAME=sso.treeyh.com
+      - quarkus.transaction-manager.enable-recovery=true
       # 开启反向代理
       - PROXY_ADDRESS_FORWARDING=true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=inner_network"
-      - "traefik.http.routers.halobug-sso.entrypoints=https"
-      - "traefik.http.routers.halobug-sso.tls=true"
-      - "traefik.http.routers.halobug-sso.rule=Host(`sso.treeyh.com`)"
-      - "traefik.http.services.halobug-sso.loadbalancer.server.scheme=http"
-      - "traefik.http.services.halobug-sso.loadbalancer.server.port=8080"
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
     networks:
         - inner_network
+    # command: ["start-dev"]
+    command: ["start-dev", "--db", "mysql", "--db-url", "jdbc:mysql://mysql8:3306/keycloak_db?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true", "--db-username", "root", "--db-password", "mysqlpwd"]
+    # command: ["start-dev", "--db", "postgres", "--db-url", "jdbc:postgresql://postgres:5432/keycloak_db", "--db-username", "keycloak", "--db-password", "bdpq9WfLPt47x8N0"]
+
 networks:
   inner_network:
     external: true

@@ -5,6 +5,8 @@ services:
     image: mysql:8.0
     restart: always
     container_name: mysql8
+    expose:
+      - 3306
     ports:
       - "3306:3306" 
     networks:
