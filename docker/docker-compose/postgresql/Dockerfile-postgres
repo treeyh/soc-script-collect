@@ -1,0 +1,27 @@
+FROM postgres:16
+
+# https://github.com/docker-library/postgres/blob/ab6925051ca097d415816928a50c483ecc370c00/16/bookworm/Dockerfile
+
+LABEL maintainer="tree@ejyi.com"
+
+RUN apt -y update \
+    && apt -y upgrade \
+    && apt install -y -V ca-certificates lsb-release wget \
+    && wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb \
+    && apt install -y -V ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb \
+    && wget https://packages.groonga.org/debian/groonga-apt-source-latest-$(lsb_release --codename --short).deb \
+    && apt install -y -V ./groonga-apt-source-latest-$(lsb_release --codename --short).deb \
+    && apt -y update \
+    && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release --codename --short)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && apt -y update \
+    && apt install -y -V postgresql-16-pgdg-pgroonga \
+    && apt install -y -V groonga-tokenizer-mecab
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+STOPSIGNAL SIGINT
+
+EXPOSE 5432
+CMD ["postgres"]
+
