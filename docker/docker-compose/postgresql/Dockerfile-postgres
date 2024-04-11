@@ -1,6 +1,7 @@
 FROM postgres:16
 
 # https://github.com/docker-library/postgres/blob/ab6925051ca097d415816928a50c483ecc370c00/16/bookworm/Dockerfile
+# https://pgroonga.github.io/tutorial/
 
 LABEL maintainer="tree@ejyi.com"
 

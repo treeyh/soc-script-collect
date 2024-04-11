@@ -1,3 +1,11 @@
+CREATE TABLE memos (
+  id integer,
+  content text
+);
+
+CREATE EXTENSION IF NOT EXISTS pgroonga;
+CREATE INDEX pgroonga_content_index ON memos USING pgroonga (content);
+
 INSERT INTO memos VALUES (1, 'PostgreSQL is a relational database management system.');
 INSERT INTO memos VALUES (2, 'Groonga is a fast full text search engine that supports all languages.');
 INSERT INTO memos VALUES (3, 'PGroonga is a PostgreSQL extension that uses Groonga as index.');
